@@ -1,7 +1,9 @@
 express = require("express")
+app = module.exports = express.createServer()
+io = require("socket.io").listen app
 routes = require("./routes")
 require('jade/lib/inline-tags').push('textarea'); # Fix whitespace issue in textareas
-app = module.exports = express.createServer()
+
 app.configure ->
   app.set "views", __dirname + "/views"
   app.set "view engine", "jade"
@@ -25,6 +27,14 @@ app.get "/upload", routes.images.new
 app.post "/upload", routes.images.create
 app.get "/:image_slug", routes.images.show
 app.get "/", routes.images.index
+
+io.on "connection", (socket) ->
+  redis = require "redis"
+  redis_client = redis.createClient process.env.REDIS_PORT or null, process.env.REDIS_HOST or null
+  redis_client.auth process.env.REDIS_AUTH or ""
+  redis_client.on "message", (channel, image) ->
+    socket.emit "new_image", image
+  redis_client.subscribe "latest_images"
 
 port = process.env.PORT or 3000
 app.listen port, ->
