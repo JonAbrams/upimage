@@ -4,6 +4,12 @@ io = require("socket.io").listen app
 routes = require("./routes")
 require('jade/lib/inline-tags').push('textarea'); # Fix whitespace issue in textareas
 
+# Force long-polling to enable heroku compatibility
+# Remove this if using a WebSockets compatible server
+io.configure ->
+  io.set "transports", ["xhr-polling"]
+  io.set "polling duration", 10
+
 app.configure ->
   app.set "views", __dirname + "/views"
   app.set "view engine", "jade"
