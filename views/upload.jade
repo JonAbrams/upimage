@@ -1,0 +1,24 @@
+extends layout
+
+block head
+  != js("upload")
+
+block main
+  .headline
+    h2 Upload an Image
+    h3 Note: Only upload images that you have legal permission to upload.
+  form#entry_form.form-horizontal(method="post", action="/upload", enctype="multipart/form-data")
+    .control-group
+      .controls
+        input(type="file", name="image")
+    .control-group
+      label.control-label(for="name") Image Name
+      .controls
+        input(type="text", name="name")
+    .control-group
+      label.control-label(for="description") Image Description
+      .controls
+        textarea(name="description")
+        p.help-block Optional
+    .form-actions
+      input.btn.btn-primary(type="submit", value="Upload Image")
