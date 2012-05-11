@@ -99,7 +99,9 @@ exports.images.create = (req, res) ->
               name: req.body.name
               description: req.body.description
             }, (err, result) ->
+              # Add to the list of latest_images
               redis_client.lpush "latest_images", "image:#{id}"
+              # Send the thumbnail to connected browsers
               redis_client.publish "latest_images", JSON.stringify {
                 thumb: "data:#{req.files.image.type};base64,#{stdout_buf.toString('base64')}"
                 name: req.body.name
