@@ -35,16 +35,15 @@ app.get "/:image_slug", routes.images.show
 app.get "/", routes.images.index
 
 io.set "log level", 1
+redis = require "redis"
+redis_client = redis.createClient process.env.REDIS_PORT or null, process.env.REDIS_HOST or null
+redis_client.auth process.env.REDIS_AUTH or ""
+redis_client.on "error", (err) -> console.log "Redis Error: #{err}"
+redis_client.subscribe "latest_images"
+
 io.on "connection", (socket) ->
-  redis = require "redis"
-  redis_client = redis.createClient process.env.REDIS_PORT or null, process.env.REDIS_HOST or null
-  redis_client.auth process.env.REDIS_AUTH or ""
   redis_client.on "message", (channel, image) ->
-    socket.emit "new_image", image if channel is "latest_images"
-  redis_client.subscribe "latest_images"
-  io.on "disconnect", (socket) ->
-    redis_client.unsubscribe "latest_images"
-    
+    socket.emit "new_image", image if channel is "latest_images"    
 
 port = process.env.PORT or 3000
 app.listen port, ->
