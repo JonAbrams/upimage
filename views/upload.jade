@@ -2,6 +2,7 @@ extends layout
 
 block head
   != js("upload")
+  != js("bootstrap-button")
 
 block main
   .headline
@@ -21,4 +22,4 @@ block main
         textarea(name="description")
         p.help-block Optional
     .form-actions
-      input.btn.btn-primary(type="submit", value="Upload Image")
+      input.btn.btn-primary(type="submit", value="Upload Image", data-loading-text="Uploading Image...")
