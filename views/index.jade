@@ -10,7 +10,8 @@ block main
     each image in images
       li.span3
         .image_container
-          a.thumbnail(href=image.slug, title=image.name, rel="tooltip")
+          - var image_name = image.name || ""
+          a.thumbnail(href=image.slug, title=image_name, rel="tooltip")
             img(src="//s3.amazonaws.com/"+process.env.S3_BUCKET+"/"+image.id+"/thumb/"+image.file_name)
   li.span3.hide.thumb_template
     a.thumbnail(href="#")
