@@ -42,6 +42,9 @@ io.on "connection", (socket) ->
   redis_client.on "message", (channel, image) ->
     socket.emit "new_image", image if channel is "latest_images"
   redis_client.subscribe "latest_images"
+  io.on "disconnect", (socket) ->
+    redis_client.unsubscribe "latest_images"
+    
 
 port = process.env.PORT or 3000
 app.listen port, ->
