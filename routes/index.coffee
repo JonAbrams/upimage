@@ -1,5 +1,6 @@
 # Constants
-THUMB_SIZE = 260 # Max height/width for thumbnails
+THUMB_WIDTH = 260 # Max height/width for thumbnails
+THUMB_HEIGHT = 160
 MEDIUM_SIZE = 500 # MAx height/width for medium sized versions
 N_IMAGES = 10
 
@@ -69,12 +70,16 @@ exports.images.create = (req, res) ->
             res.end "Error: Invalid image type. Only jpeg, png, and gif supported"
             return
           # Use ImageMagick to create the thumbnail version
+          console.log "Image type: #{format}"
           im.resize {
             srcData: buf
-            width: THUMB_SIZE
+            width: THUMB_WIDTH
+            height: THUMB_HEIGHT
             format
           }, (err, stdout, stderr) ->
-            if err then throw err
+            if err
+              res.end("Unrecognized image format")
+              return
             # Store the thumbnail with s3
             stdout_buf = new Buffer(stdout, 'binary')
             s3_client.put(

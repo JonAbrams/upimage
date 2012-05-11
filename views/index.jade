@@ -3,13 +3,15 @@ extends layout
 block head
   script(src="/socket.io/socket.io.js")
   != js("index")
+  != js("bootstrap-tooltip")
   
 block main
   ul.thumbnails
     each image in images
       li.span3
-        a.thumbnail(href=image.slug)
-          img(src="//s3.amazonaws.com/"+process.env.S3_BUCKET+"/"+image.id+"/thumb/"+image.file_name)
+        .image_container
+          a.thumbnail(href=image.slug)
+            img(src="//s3.amazonaws.com/"+process.env.S3_BUCKET+"/"+image.id+"/thumb/"+image.file_name)
   li.span3.hide.thumb_template
     a.thumbnail(href="#")
       img(src="")
