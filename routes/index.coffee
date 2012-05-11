@@ -70,7 +70,6 @@ exports.images.create = (req, res) ->
             res.end "Error: Invalid image type. Only jpeg, png, and gif supported"
             return
           # Use ImageMagick to create the thumbnail version
-          console.log "Image type: #{format}"
           im.resize {
             srcData: buf
             width: THUMB_WIDTH
