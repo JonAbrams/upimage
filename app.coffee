@@ -42,8 +42,11 @@ redis_client.on "error", (err) -> console.log "Redis Error: #{err}"
 redis_client.subscribe "latest_images"
 
 io.on "connection", (socket) ->
-  redis_client.on "message", (channel, image) ->
-    socket.emit "new_image", image if channel is "latest_images"    
+  handle_message = (channel, image) ->
+    socket.emit "new_image", image if channel is "latest_images"
+  event = redis_client.on "message", handle_message
+  socket.on "disconnect", ->
+    redis_client.removeListener "message", handle_message
 
 port = process.env.PORT or 3000
 app.listen port, ->
